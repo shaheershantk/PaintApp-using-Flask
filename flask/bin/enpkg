@@ -1,0 +1,10 @@
+#!/home/shaheer/MyPaint/flask/bin/python
+# This script was created by egginst when installing:
+#
+#   enstaller-4.6.5-1.egg
+#
+if __name__ == '__main__':
+    import sys
+    from enstaller.main import main_noexc
+
+    sys.exit(main_noexc())

@@ -1,0 +1,13 @@
+#!/home/shaheer/Canopy/bin/_python
+import sys
+profile = ''
+if '--profile' not in ' '.join(sys.argv):
+    sys.argv.insert(1, '--profile')
+    sys.argv.insert(2, profile)
+launch_prefix = '/home/shaheer/MyPaint/flask'
+if '--launch-prefix' not in ' '.join(sys.argv):
+    sys.argv.insert(1, '--launch-prefix')
+    sys.argv.insert(2, launch_prefix)
+root_launcher = '/home/shaheer/Canopy/__boot__.py'
+ns = dict(__file__=root_launcher)
+execfile(root_launcher, ns)

@@ -1,0 +1,200 @@
+<html>
+<head><title>Paint App</title>
+
+<canvas id="canvas" width="650" height="450" style="border:5px solid black; background-color:white;"></canvas>
+<a href="http://127.0.0.1:5000/gallery" >Gallery</a>
+<form><left>
+<input type="button" value="Pencil" onclick="pencil()" >
+<input type="button" value="Line" onclick="line()" >
+<input type="button" value="Rect" onclick="rectangle()" >
+<input type="button" value="Circle" onclick="circle()" >
+<input type="button" value="Clear" onclick="clear()" >
+<input type="button" value="Eraser" onclick="eraser()" >
+<input type="button" value="Blue" id="blue">
+<input type="button" value="Red" id="red">
+<input type="button" value="Green" id="green">
+<script src="{{url_for('static',filename='min.js')}}"></script>
+<script type="text/javascript" src="static/paint.js"></script>
+
+
+
+
+
+</left></form>
+<script src="{{url_for('static',filename='min.js')}}"></script>
+<table>
+<center>
+
+Filename:<input id="filename" name="filename">
+<input type='button' value='save' onclick='save()'>
+<script>
+jsondata=[]
+
+
+var canvas = document.getElementById("canvas");
+var context=canvas.getContext('2d');
+context.lineWidth=3;
+context.strokeStyle="black";
+
+function save() {
+if (filename.value==""){
+alert("Enter filename:");
+}
+else{
+$.post("/"+filename.value,{'name':filename.value,'data':JSON.stringify(jsondata)},function(data,status){alert("Saved")});
+}
+}
+
+function clear(){
+jsondata=[];
+context.clearRect(0,0,650,450);
+context.fillStyle="white";
+context.fillRect(0,0,650,450);
+}
+function pencil(){
+var canvas = document.getElementById("canvas");
+var context=canvas.getContext('2d');
+context.strokeStyle="black";
+
+color(context);
+
+canvas.onmousedown=pencildown;
+canvas.onmouseup=pencilup;
+canvas.onmousemove=pencilmove;
+function pencildown(e){
+
+x=e.x;
+y=e.y;
+draw=true;
+}
+function pencilup(){
+draw=false;
+}
+function pencilmove(event){
+if (draw){
+   
+   a =event.x;
+   b =event.y;
+   context.beginPath();
+   context.moveTo(x,y);
+   context.lineTo(a,b);
+   context.stroke();
+   context.closePath();
+   jsondata.push({"Type":"pencil", "X0":x,"Y0":y,"X1":a,"Y1":b,"width":context.lineWidth,"color":context.strokeStyle})
+   x=a;
+   y=b;
+ }}}
+function line(){
+var canvas = document.getElementById("canvas");
+var context=canvas.getContext('2d');
+context.strokeStyle="black";
+color(context);
+
+canvas.onmousedown=linedown;
+canvas.onmouseup=lineup;
+canvas.onmousemove=linemove;
+function linedown(e){
+ 
+ img=context.getImageData(0,0,canvas.width,canvas.height);
+ startx=e.x;
+ starty=e.y;
+ drag1=true;
+}
+function lineup(e){
+drag1=false;
+jsondata.push({"Type":"line", "X0":startx,"Y0":starty,"X1":endx,"Y1":endy,"width":context.lineWidth,"color":context.strokeStyle})
+
+}
+function linemove(e){
+ if (drag1){
+ 
+ context.putImageData(img,0,0);
+ endx=e.x;
+ endy=e.y;
+ context.beginPath();
+ context.moveTo(startx,starty);
+ context.lineTo(endx,endy);
+ context.stroke();
+ context.closePath();
+}}}
+function rectangle(){
+var canvas = document.getElementById("canvas");
+var context=canvas.getContext('2d');
+context.strokeStyle="black";
+color(context);
+canvas.onmousedown=rectdown;
+canvas.onmouseup=rectup;
+canvas.onmousemove=rectmove;
+function rectdown(e){
+ 
+ img=context.getImageData(0,0,canvas.width,canvas.height);
+ startx=e.x;
+ starty=e.y;
+ drag2=true;
+}
+function rectup(e){
+drag2=false;
+jsondata.push({"Type":"rect", "X0":startx,"Y0":starty,"W":rectw,"H":recth,"width":context.lineWidth,"color":context.strokeStyle})
+}
+function rectmove(e){
+if (drag2){
+
+context.putImageData(img,0,0);
+rectw=e.x-startx;
+recth=e.y-starty;
+context.strokeRect(startx,starty,rectw,recth);
+
+}}}
+
+function circle(){
+var canvas = document.getElementById("canvas");
+var context=canvas.getContext('2d');
+context.strokeStyle="black";
+color(context);
+canvas.onmousedown=circledown;
+canvas.onmouseup=circleup;
+canvas.onmousemove=circlemove;
+function circledown(e){
+ img=context.getImageData(0,0,canvas.width,canvas.height);
+ startx=e.x;
+ starty=e.y;
+ drag3=true;
+}
+function circleup(e){
+jsondata.push({"Type":"circle", "X0":startx,"Y0":starty,"X1":endx,"Y1":endy,"width":context.lineWidth,"color":context.strokeStyle})
+drag3=false;
+}
+function circlemove(e){
+if (drag3){
+context.putImageData(img,0,0);
+endx=e.x;
+endy=e.y;
+context.beginPath();
+context.arc(Math.abs(endx+startx)/2,Math.abs(endy+starty)/2,Math.sqrt(Math.pow(endx-startx,2)+Math.pow(endy-starty,2))/2, 0, Math.PI*2, true); 
+context.closePath();
+context.stroke();
+
+}}}
+function color(x){
+	document.getElementById("blue").onclick=function(){
+	x.strokeStyle='blue';  }
+	
+	document.getElementById("red").onclick=function(){
+	x.strokeStyle='red';   }
+
+	document.getElementById("green").onclick=function(){
+	x.strokeStyle='green'; }
+}
+function eraser(){
+	var canvas = document.getElementById("canvas");
+	var context=canvas.getContext('2d');
+
+	
+	context.strokeStyle='white'; 
+}
+	
+
+
+
+</script>
+</html>

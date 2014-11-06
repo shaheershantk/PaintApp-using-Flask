@@ -1,0 +1,14 @@
+{
+  "arch": "amd64", 
+  "build": 1, 
+  "ctime": "Thu Oct 30 13:31:10 2014", 
+  "hook": false, 
+  "key": "distribute-0.6.49-1.egg", 
+  "name": "distribute", 
+  "osdist": "RedHat_5", 
+  "packages": [], 
+  "platform": "linux2", 
+  "python": "2.7", 
+  "type": "egg", 
+  "version": "0.6.49"
+}
